@@ -1,6 +1,6 @@
 {
-  "name": "KaiOS",
-  "description": "Demonstrates a basic KaiOS app",
+  "name": "Books",
+  "description": "Ebook reader",
   "version": "0.0.1",
   "developer": {
     "name": "Your name",
@@ -8,8 +8,8 @@
   },
   "launch_path": "/index.html",
     "icons": {
-    "56": "/icons/app_56.png",
-    "112": "/icons/app_112.png"
+    "56": "/icons/books_56.png",
+    "112": "/icons/books_112.png"
   },
   "theme_color": "#a065e6",
   "type": "privileged",
@@ -22,12 +22,12 @@
   "orientation": "default",
   "locales": {
     "en-US": {
-      "name": "Template",
-      "description": "Template App for KaiOS"
+      "name": "Books",
+      "description": "Ebook reader"
     },
     "zh-CN": {
-      "name": "模板",
-      "description": "KaiOS模板应用"
+      "name": "读书",
+      "description": "电子书阅读器"
     }
   },
   "default_locale": "en-US"
