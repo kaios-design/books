@@ -1,0 +1,26 @@
+{
+  "name": "books",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "kaios-scripts": "0.0.8",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
+  },
+  "scripts": {
+    "start": "kaios-scripts start",
+    "build": "kaios-scripts build",
+    "push": "kaios-scripts push",
+    "test": "kaios-scripts test",
+    "eject": "kaios-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
