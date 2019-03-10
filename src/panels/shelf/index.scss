@@ -1,0 +1,13 @@
+.shelf {
+  position: relative;
+  top: var(--statusbar-height);
+  height: calc(100% - var(--statusbar-height));
+  background: var(--color-gs00);
+  outline: none;
+}
+
+.shelf-content {
+  width: 100%;
+  height: calc(100% - var(--header-height) - var(--softkeybar-height));
+  overflow: hidden;
+}
