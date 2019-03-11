@@ -3,18 +3,21 @@ import { Header, Empty, SoftKey } from 'kaid';
 
 import './index.scss';
 
-export default class extends React.Component {
+export default class Shelf extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       books: null
     };
+    // don't use class properties instead of proper manual this-binding
+    // see: https://github.com/airbnb/enzyme/issues/944
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
     this.setState({
       books: []
-    })
+    });
   }
 
   componentDidUpdate() {
@@ -22,10 +25,10 @@ export default class extends React.Component {
   }
 
   focus() {
-    this.element.focus();
+    this.element && this.element.focus();
   }
 
-  onKeyDown = (evt) => {
+  onKeyDown(evt) {
     const { key } = evt;
     switch (key) {
       case 'SoftLeft':
@@ -41,7 +44,6 @@ export default class extends React.Component {
         break;
     }
   };
-
 
   render() {
     const { books } = this.state;
@@ -62,7 +64,7 @@ export default class extends React.Component {
             : null
           }
         </div>
-        <SoftKey left="open" ref={(node) => { this.softKey = node; }} />
+        <SoftKey left="open" />
       </div>
     );
   }
