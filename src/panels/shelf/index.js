@@ -1,23 +1,20 @@
 import React from 'react';
 import { Header, Empty, SoftKey } from 'kaid';
 
+import { BooksContext } from '../../provider';
+
 import './index.scss';
 
 export default class Shelf extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      books: null
-    };
     // don't use class properties instead of proper manual this-binding
     // see: https://github.com/airbnb/enzyme/issues/944
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
-    this.setState({
-      books: []
-    });
+    this.focus();
   }
 
   componentDidUpdate() {
@@ -46,7 +43,6 @@ export default class Shelf extends React.Component {
   };
 
   render() {
-    const { books } = this.state;
     return (
       <div
         className="shelf"
@@ -57,12 +53,16 @@ export default class Shelf extends React.Component {
       >
         <Header text="books" />
         <div className="shelf-content">
-          {books
-            ? books.length === 0
-              ? <Empty text="no-books" />
-              : null
-            : null
-          }
+          <BooksContext.Consumer>
+            {
+              ({ books }) => (
+                books.length === 0
+                  ? <Empty text="no-books" />
+                  // TODO
+                  : <p>There are {books.length} txt books.</p>
+              )
+            }
+          </BooksContext.Consumer>
         </div>
         <SoftKey left="open" />
       </div>

@@ -6051,6 +6051,11 @@ kaios-gaia-l10n@^0.0.1:
   resolved "https://registry.yarnpkg.com/kaios-gaia-l10n/-/kaios-gaia-l10n-0.0.1.tgz#5fd2d9717b6bed88610f200ced8bbfdc4f92faad"
   integrity sha512-3BJ5A7RjGpMl7hz90kiWxvuJ0t2I7Nsi4tD5vz9nw/S6OMcLvygzP7kbndUW/EgMA2nhxI5yuyHL9Z1wfjro0w==
 
+kaios-gaia-mediadb@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/kaios-gaia-mediadb/-/kaios-gaia-mediadb-0.0.3.tgz#8b3bf2d19edaf00137f351e88567b93ee83c606c"
+  integrity sha512-zrGHHmgwJqb/rDmFvZzgJoSVXzWvh2ctmuSDGXps8SkhjJTbsSltTUt5dVLeOXIXqttA/91ZeG4p1ZqAodVFfQ==
+
 kaios-scripts@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/kaios-scripts/-/kaios-scripts-0.0.8.tgz#aed26348bc2d2bb9326afe04a00459509cb22aa8"
