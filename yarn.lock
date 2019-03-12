@@ -6038,10 +6038,10 @@ jsx-ast-utils@^2.0.1:
   dependencies:
     array-includes "^3.0.3"
 
-kaid@^0.0.1-alpha4:
-  version "0.0.1-alpha4"
-  resolved "https://registry.yarnpkg.com/kaid/-/kaid-0.0.1-alpha4.tgz#7544db49725fb8435c7d35b9321cdf197f6bb4e0"
-  integrity sha512-LxKhg4AyOFSbHk0rWQkaHbfXfDUA20b/VoIL5cbDUD/6Vsmayvb3skX2h7GrnurR++WLblXD4aCMOzUOn18dhw==
+kaid@^0.0.1-alpha5:
+  version "0.0.1-alpha5"
+  resolved "https://registry.yarnpkg.com/kaid/-/kaid-0.0.1-alpha5.tgz#b7314774763e2ab3bcdb22a5e8ff0ecd05999614"
+  integrity sha512-KHd+qbs5Bz5DxJpOra/mqfBvjgVaqkZuJGnql4EZ0Fv9IVVdtycRsFSCmtPRefWTxIrCEK1d6FA8qJrdaBqIww==
   dependencies:
     react "^16.8.4"
     react-dom "^16.8.4"
