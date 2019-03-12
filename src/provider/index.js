@@ -7,7 +7,9 @@ export default class BooksProvider extends Component {
   books = [];
 
   state = {
-    books: []
+    books: [],
+    content: null,
+    get: (filename) => { this.getBookContent(filename); }
   };
 
   componentDidMount() {
@@ -100,5 +102,31 @@ export default class BooksProvider extends Component {
         {this.props.children}
       </BooksContext.Provider>
     )
+  }
+
+  getBookContent(filename) {
+    if (!filename) {
+      return;
+    }
+
+    console.log(`to get book:${filename}`);
+    this.bookdb.getFile(filename,
+      (fileBlob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          this.setState({ curr: filename, content: reader.result });
+        };
+
+        reader.onerror = (event) => {
+          console.log(`An error occurred while reading the file. Error code: ${
+            event.target.error.code}`);
+        };
+        reader.readAsText(fileBlob);
+      },
+      // on error
+      () => {
+        console.log('Could not load file');
+      }
+    );
   }
 }

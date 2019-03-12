@@ -31,8 +31,18 @@ export default class Shelf extends React.Component {
     this.list ? this.list.focus() : this.element.focus();
   }
 
+  show = () => {
+    this.element.classList.remove('hidden');
+    this.focus();
+  }
+
+  hide = () => {
+    this.element.classList.add('hidden');
+  }
+
   onKeyDown(evt) {
-    const { key } = evt;
+    const { key, target } = evt;
+    const { onSelect } = this.props;
     switch (key) {
       case 'SoftLeft':
         // patch needed to filemanager
@@ -43,6 +53,13 @@ export default class Shelf extends React.Component {
           }
         });
         break;
+
+      case 'Enter':
+        if (this.list) {
+          onSelect(target.id);
+        }
+        break;
+
       default:
         break;
     }
