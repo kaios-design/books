@@ -1,7 +1,5 @@
 import React from 'react';
-import { Header, Empty, SoftKey } from 'kaid';
-
-import { BooksContext } from '../../provider';
+import { Header, Empty, SoftKey, List, ListItem } from 'kaid';
 
 import './index.scss';
 
@@ -22,7 +20,7 @@ export default class Shelf extends React.Component {
   }
 
   focus() {
-    this.element && this.element.focus();
+    this.list ? this.list.focus() : this.element.focus();
   }
 
   onKeyDown(evt) {
@@ -43,6 +41,7 @@ export default class Shelf extends React.Component {
   };
 
   render() {
+    const { books } = this.props;
     return (
       <div
         className="shelf"
@@ -53,16 +52,23 @@ export default class Shelf extends React.Component {
       >
         <Header text="books" />
         <div className="shelf-content">
-          <BooksContext.Consumer>
-            {
-              ({ books }) => (
-                books.length === 0
-                  ? <Empty text="no-books" />
-                  // TODO
-                  : <p>There are {books.length} txt books.</p>
+          {
+            books.length === 0
+              ? <Empty text="no-books" />
+              : (
+                <List ref={(list) => { this.list = list; }}>
+                  {books.map(book => (
+                    <ListItem
+                      primary={book.title}
+                      icon="file"
+                      focusable="true"
+                      key={book.filename}
+                      id={book.filename}
+                    />
+                  ))}
+                </List>
               )
-            }
-          </BooksContext.Consumer>
+          }
         </div>
         <SoftKey left="open" />
       </div>

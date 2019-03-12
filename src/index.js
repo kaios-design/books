@@ -4,8 +4,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './panels';
+import BooksProvider from './provider';
 
 import 'kaid/lib/style.css';
 import './index.scss';
 
-ReactDOM.render(<App />, document.getElementById('app'));
+
+ReactDOM.render((
+  <BooksProvider>
+    <App />
+  </BooksProvider>
+), document.getElementById('app'));

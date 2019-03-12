@@ -1,7 +1,8 @@
 import React from 'react';
 import Shelf from './shelf';
 
-import BooksProvider from '../provider';
+import { BooksContext } from '../provider';
+
 
 export default class App extends React.Component {
   constructor(props) {
@@ -12,9 +13,13 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <BooksProvider>
-        <Shelf ref={(node) => { this.panels.shelf = node; }} />
-      </BooksProvider>
+      <BooksContext.Consumer>
+        {
+          ({ books }) => (
+            <Shelf books={books} ref={(node) => { this.panels.shelf = node; }} />
+          )
+        }
+      </BooksContext.Consumer>
     );
   }
 }
