@@ -1,4 +1,5 @@
 import React from 'react';
+import { Menu } from 'kaid';
 
 import './index.scss';
 
@@ -23,6 +24,21 @@ export default class Reader extends React.Component {
       });
     }
   }
+
+  menuOptions = [
+    {
+      id: 'open',
+      callback: () => {
+        console.log('---open-----')
+      }
+    },
+    {
+      id: 'read',
+      callback: () => {
+        console.log('----read-----')
+      }
+    }
+  ];
 
   componentDidUpdate() {
     const { page } = this.state;
@@ -74,6 +90,13 @@ export default class Reader extends React.Component {
         break;
       case 'ArrowRight':
         this.goToPage(page + 1);
+        break;
+      case 'Enter':
+        Menu.open({
+          options: this.menuOptions,
+          onOpen: () => { document.exitFullscreen(); },
+          onClose: () => { this.element.requestFullscreen(); }
+        });
         break;
       case 'Backspace':
         onBack();
