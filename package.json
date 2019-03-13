@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "kaid": "^0.0.1-alpha7",
+    "kaid": "^0.0.1-alpha8",
     "kaios-gaia-mediadb": "^0.0.3",
     "kaios-scripts": "0.0.8",
     "react": "^16.8.4",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu } from 'kaid';
+import { Menu, Dialog } from 'kaid';
 
 import './index.scss';
 
@@ -27,15 +27,14 @@ export default class Reader extends React.Component {
 
   menuOptions = [
     {
-      id: 'open',
-      callback: () => {
-        console.log('---open-----')
-      }
-    },
-    {
-      id: 'read',
-      callback: () => {
-        console.log('----read-----')
+      id: 'goto-page',
+      onSelect: () => {
+        Dialog.prompt({
+          content: 'goto-page',
+          inputOptions: { type: 'tel' },  // should use 'number' after 57612 fixed
+          onOK: (page) => { this.goToPage(+page) },
+          onClose: () => { this.element.requestFullscreen(); }
+        });
       }
     }
   ];
@@ -68,7 +67,7 @@ export default class Reader extends React.Component {
 
   goToPage = (page) => {
     const { pageNum } = this.state;
-    if (page < 1 || page > pageNum) {
+    if (Number.isNaN(page) || page < 1 || page > pageNum) {
       return;
     }
     this.setState({ page });
@@ -95,7 +94,7 @@ export default class Reader extends React.Component {
         Menu.open({
           options: this.menuOptions,
           onOpen: () => { document.exitFullscreen(); },
-          onClose: () => { this.element.requestFullscreen(); }
+          onCancel: () => { this.element.requestFullscreen(); }
         });
         break;
       case 'Backspace':

@@ -18,7 +18,8 @@ export default class Shelf extends React.Component {
   componentDidUpdate() {
     SoftKey.register({
       left: 'open',
-      center: this.list ? 'read' : ''
+      center: this.list ? 'read' : '',
+      right: ''
     }, this.element);
     this.focus();
   }
