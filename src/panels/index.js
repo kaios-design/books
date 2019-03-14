@@ -39,7 +39,7 @@ export default class App extends React.Component {
     return (
       <BooksContext.Consumer>
         {
-          ({ books, content, get, curr }) => (
+          ({ books, content, curr, progress, get, update }) => (
             <>
               <Shelf
                 onSelect={(file) => { if (curr !== file) { get(file); } this.onSelectBook() }}
@@ -47,9 +47,11 @@ export default class App extends React.Component {
                 ref={(node) => { this.panels.shelf = node; }}
               />
               <Reader
-                onBack={this.onBackFromReader}
+                onBack={(file) => { update(file); this.onBackFromReader();}}
                 file={curr}
+                get={get}
                 bookContent={content}
+                progress={progress}
                 ref={(node) => { this.panels.reader = node; }}
               />
             </>

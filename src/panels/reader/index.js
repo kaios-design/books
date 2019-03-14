@@ -11,18 +11,34 @@ export default class Reader extends React.Component {
     this.state = {
       file: null,
       page: 1,
-      pageNum: null
+      pageNum: null,
+      parse: 'init',
+      progress: 0
     };
   }
 
   static getDerivedStateFromProps(props, state) {
     if (props.file !== state.file) {
+      const pages = props.file.metadata.pages;
       return ({
         file: props.file,
-        page: 1,
-        pageNum: null
+        page: props.file.metadata.page,
+        pageNum: pages[pages.length - 1],
+        parse: props.file.metadata.parse,
+        progress: props.progress
       });
     }
+
+    if (props.progress !== state.progress) {
+      const pages = props.file.metadata.pages;
+      return ({
+        file: props.file,
+        pageNum: pages[pages.length - 1],
+        parse: props.file.metadata.parse,
+        progress: props.progress
+      });
+    }
+    return {};
   }
 
   menuOptions = [
@@ -41,8 +57,13 @@ export default class Reader extends React.Component {
 
   componentDidUpdate() {
     const { page } = this.state;
-    this.transform(PAGE_WIDTH * (1 - page));
-    this.calcPageNum();
+    const { file } = this.props;
+    let offset = page;
+    if (file) {
+      const { pages } = file.metadata;
+      offset = page - (pages[pages.findIndex(element => element >= page) - 1] || 0);
+    }
+    this.transform(PAGE_WIDTH * (1 - offset));
   }
 
   calcPageNum = () => {
@@ -70,7 +91,17 @@ export default class Reader extends React.Component {
     if (Number.isNaN(page) || page < 1 || page > pageNum) {
       return;
     }
-    this.setState({ page });
+    const file = this.props.file;
+    const metadata = file.metadata;
+    const { pages, chunk } = this.props.file.metadata;
+    const { get } = this.props;
+
+    if (page <= pages[chunk - 1] && page > (pages[chunk - 2] || 0)) {
+      this.setState({ page });
+    } else {
+      metadata.chunk = pages.findIndex(element => element >= page) + 1;
+      get(file.name, metadata.chunk, () => { this.setState({ page }) });
+    }
   }
 
   transform = (offset) => {
@@ -98,7 +129,14 @@ export default class Reader extends React.Component {
         });
         break;
       case 'Backspace':
-        onBack();
+        const { file } = this.props;
+        const { metadata } = file;
+        if (metadata.parse === 'start') {
+          metadata.parse = 'pause';
+        }
+        metadata.page = page;
+        metadata.read = Date.now();
+        onBack(file);
         e.preventDefault();
         break;
       default:
@@ -126,7 +164,11 @@ export default class Reader extends React.Component {
           />
         </div>
         <div className="reader-footer">
-          {pageNum === null ? null : `${page}/${pageNum}`}
+          {
+            //{!parse == 'parsing' ? 'parsing...' : `${page}/${pageNum}`}
+          }
+          {pageNum ? `${page}/${pageNum}` : null}
+
         </div>
       </div>
     );
