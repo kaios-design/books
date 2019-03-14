@@ -1,5 +1,6 @@
 import 'kaios-gaia-mediadb';
 import React, { Component } from 'react';
+import FileWorker from './file.worker';
 
 export const BooksContext = React.createContext();
 
@@ -8,12 +9,14 @@ export default class BooksProvider extends Component {
 
   state = {
     books: [],
+    curr: null,
     content: null,
     get: (filename) => { this.getBookContent(filename); }
   };
 
   componentDidMount() {
     this.initDB();
+    this.initWorker();
   }
 
   initDB = () => {
@@ -27,6 +30,15 @@ export default class BooksProvider extends Component {
     bookdb.ondeleted = this.removeBooks;
     this.bookdb = bookdb;
   };
+
+  initWorker = () => {
+    const worker = new FileWorker();
+    worker.onmessage = ({ data }) => {
+      const content = new TextDecoder('gbk').decode(data, { stream: true });
+      this.setState({  curr: this.curr, content });
+    }
+    this.worker = worker;
+  }
 
   enum = () => {
     const { bookdb } = this;
@@ -104,7 +116,7 @@ export default class BooksProvider extends Component {
     )
   }
 
-  getBookContent(filename) {
+  getBookContent = (filename) => {
     if (!filename) {
       return;
     }
@@ -112,16 +124,8 @@ export default class BooksProvider extends Component {
     console.log(`to get book:${filename}`);
     this.bookdb.getFile(filename,
       (fileBlob) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          this.setState({ curr: filename, content: reader.result });
-        };
-
-        reader.onerror = (event) => {
-          console.log(`An error occurred while reading the file. Error code: ${
-            event.target.error.code}`);
-        };
-        reader.readAsText(fileBlob);
+        this.curr = filename;
+        this.worker.postMessage({ file: fileBlob, offset: 0, length: 300 * 1024 });
       },
       // on error
       () => {
