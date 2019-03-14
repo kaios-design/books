@@ -5,10 +5,10 @@ import FileWorker from './file.worker';
 export const BooksContext = React.createContext();
 
 export default class BooksProvider extends Component {
-  books = [];
+  books = new Map();
 
   state = {
-    books: [],
+    books: new Map(),
     curr: null,
     content: null,
     get: (filename) => { this.getBookContent(filename); }
@@ -77,35 +77,29 @@ export default class BooksProvider extends Component {
     }
   */
   addBook = (file) => {
-    // TODO: better regExp
-    const book = {
-      title: file.name.replace(/[^/]*[/]+/g, '').replace(/.txt$/, ''),
-      author: '',
-      filename: file.name
-    };
-    this.books.push(book);
+    if (!file.metadata.title) {
+      file.metadata = {
+        title: file.name.replace(/(.*\/)*([^.]+).*/ig, '$2'),
+        author: '',
+        page: 1,
+        total_pages: 1,
+        read_date: 0,
+        parsed: false,
+        pages: []
+      }
+    }
+    this.books.set(file.name, file);
   }
 
   removeBooks = ({ detail: files }) => {
     if (files.length > 0) {
-      files.forEach((file) => { this.removeBook(file); });
+      files.forEach((file) => { this.books.delete(file.name); });
     }
     this.flush();
   }
 
-  removeBook = (file) => {
-    const { books } = this;
-    let i = 0;
-    for (i = 0; i < books.length; i++) {
-      if (books[i].filename === file.name)
-        break;
-    }
-    if (i >= books.length) return;
-    books.splice(i, 1);
-  }
-
   flush = () => {
-    this.setState({ books: [...this.books] });
+    this.setState({ books: new Map(this.books) });
   }
 
   render() {

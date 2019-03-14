@@ -79,17 +79,17 @@ export default class Shelf extends React.Component {
         <Header text="books" />
         <div className="shelf-content">
           {
-            books.length === 0
+            books.size === 0
               ? <Empty text="no-books" />
               : (
                 <List ref={(list) => { this.list = list; }}>
-                  {books.map(book => (
+                  {[...books.values()].map(file => (
                     <ListItem
-                      primary={book.title}
+                      primary={file.metadata.title}
                       icon="file"
                       focusable="true"
-                      key={book.filename}
-                      id={book.filename}
+                      key={file.name}
+                      id={file.name}
                     />
                   ))}
                 </List>
