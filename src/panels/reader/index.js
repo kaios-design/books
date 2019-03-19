@@ -1,9 +1,9 @@
 import React from 'react';
 import { Menu, Dialog } from 'kaid';
 
-import './index.scss';
+import { PAGE_WIDTH } from '../../provider/page';
 
-const PAGE_WIDTH = 230;
+import './index.scss';
 
 export default class Reader extends React.Component {
   constructor(props) {
@@ -11,32 +11,19 @@ export default class Reader extends React.Component {
     this.state = {
       file: null,
       page: 1,
-      pageNum: null,
-      parse: 'init',
-      progress: 0
+      pageNum: null
     };
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.file !== state.file) {
-      const pages = props.file.metadata.pages;
-      return ({
-        file: props.file,
-        page: props.file.metadata.page,
-        pageNum: pages[pages.length - 1],
-        parse: props.file.metadata.parse,
-        progress: props.progress
-      });
-    }
-
-    if (props.progress !== state.progress) {
-      const pages = props.file.metadata.pages;
-      return ({
-        file: props.file,
-        pageNum: pages[pages.length - 1],
-        parse: props.file.metadata.parse,
-        progress: props.progress
-      });
+    const { file } = props;
+    if (file) {
+      const { metadata: { page, pages } } = file;
+      if (file !== state.file) {
+        return { file, page, pageNum: pages[pages.length - 1] };
+      } else {
+        return { pageNum: pages[pages.length - 1] };
+      }
     }
     return {};
   }
@@ -64,15 +51,6 @@ export default class Reader extends React.Component {
       offset = page - (pages[pages.findIndex(element => element >= page) - 1] || 0);
     }
     this.transform(PAGE_WIDTH * (1 - offset));
-  }
-
-  calcPageNum = () => {
-    const { bookContent } = this.props;
-    const { pageNum } = this.state;
-    if (!bookContent) return;
-    if (!pageNum) {
-      this.setState({ pageNum: Math.ceil(this.article.offsetWidth / PAGE_WIDTH) || 1 });
-    }
   }
 
   show() {
