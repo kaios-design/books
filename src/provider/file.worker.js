@@ -1,4 +1,4 @@
-import { CHUNK_SIZE } from './read_chunk';
+import { CHUNK_SIZE } from './page';
 
 onmessage = async function ({ data: { name, blob, size } }) {
   const fr = new FileReaderSync();  // eslint-disable-line

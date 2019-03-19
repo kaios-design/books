@@ -1,21 +1,17 @@
 import 'kaios-gaia-mediadb';
 import React, { Component } from 'react';
 
-import readChunk, { CHUNK_SIZE } from './read_chunk';
 import FileWorker from './file.worker';
-import calcPageNum from './calc_page';
+import { calcPages, readChunk, CHUNK_SIZE } from './page';
 
-export const BooksContext = React.createContext();
+const Context = React.createContext();
 
-export default class BooksProvider extends Component {
+export class BooksProvider extends Component {
   books = new Map();
 
   state = {
     books: new Map(),
-    curr: null,
-    content: null,
-    chunk: 1,
-    progress: 0,
+    reading: { file: null, content: '', parsing_progress: 0 },
     get: (filename, chunk, onGet) => { this.getBookContent(filename, chunk, onGet); },
     update: (file) => { this.updateMetadata(file); }
   };
@@ -48,14 +44,14 @@ export default class BooksProvider extends Component {
       }
 
       if (buffer) {
-        const { pages } = file.metadata;
-        const num = calcPageNum(buffer, file.metadata.encoding);
+        const { pages, encoding } = file.metadata;
+        const num = calcPages(buffer, encoding);
         pages.push((pages[pages.length - 1] || 0) + num);
       }
 
-      const { curr } = this.state;
-      if (curr === file) {
-        this.setState({ curr: file, progress: idx });
+      const { reading } = this.state;
+      if (reading.file === file) {
+        this.setState({ reading: { ...reading, parsing_progress: idx } });
       }
     }
     this.worker = worker;
@@ -64,11 +60,7 @@ export default class BooksProvider extends Component {
   enum = () => {
     const { bookdb } = this;
     bookdb.enumerate('name', null, 'next', (file) => {
-      if (file) {
-        this.addBook(file);
-      } else {
-        this.done();
-      }
+      file ? this.addBook(file) : this.done();
     });
   }
 
@@ -142,9 +134,9 @@ export default class BooksProvider extends Component {
 
   render() {
     return (
-      <BooksContext.Provider value={this.state}>
+      <Context.Provider value={this.state}>
         {this.props.children}
-      </BooksContext.Provider>
+      </Context.Provider>
     )
   }
 
@@ -152,19 +144,18 @@ export default class BooksProvider extends Component {
     if (!filename) {
       return;
     }
-    // const { size, metadata } = this.books.get(filename);
+
     const file = this.books.get(filename);
     const { size, metadata } = file;
+    const { reading } = this.state;
 
-    if (this.state.curr === file && this.state.chunk === chunk) {
+    if (reading.file === file && reading.chunk === chunk) {
       return;
     }
 
     if (chunk) {
       metadata.chunk = chunk;
     }
-
-    console.log('books, get book content: ----- ' + JSON.stringify(file));
 
     this.bookdb.getFile(filename,
       (fileBlob) => {
@@ -200,7 +191,7 @@ export default class BooksProvider extends Component {
             metadata.pages = [];
             this.worker.postMessage({ name: filename, blob: fileBlob, size });
           }
-          this.setState({ curr: file, chunk: file.metadata.chunk, content });
+          this.setState({ reading: { ...reading, file, content } });
           onGet && onGet();
         });
       },
@@ -215,3 +206,5 @@ export default class BooksProvider extends Component {
     this.bookdb.updateMetadata(file.name, file.metadata);
   }
 }
+
+export const BooksConsumer = Context.Consumer;
